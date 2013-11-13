@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 20131113035821) do
     t.datetime "updated_at"
   end
 
-  create_table "careers_courses", force: true do |t|
+  create_table "careers_courses", id: false, force: true do |t|
     t.integer "career_id"
     t.integer "course_id"
   end
@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 20131113035821) do
     t.datetime "updated_at"
   end
 
-  create_table "classrooms_courses", force: true do |t|
+  create_table "classrooms_courses", id: false, force: true do |t|
     t.integer "classroom_id"
     t.integer "course_id"
   end
@@ -63,7 +63,7 @@ ActiveRecord::Schema.define(version: 20131113035821) do
   add_index "courses", ["department_id"], name: "index_courses_on_department_id", using: :btree
   add_index "courses", ["term_id"], name: "index_courses_on_term_id", using: :btree
 
-  create_table "courses_instructors", force: true do |t|
+  create_table "courses_instructors", id: false, force: true do |t|
     t.integer "course_id"
     t.integer "instructor_id"
   end
@@ -71,7 +71,8 @@ ActiveRecord::Schema.define(version: 20131113035821) do
   add_index "courses_instructors", ["course_id"], name: "index_courses_instructors_on_course_id", using: :btree
   add_index "courses_instructors", ["instructor_id"], name: "index_courses_instructors_on_instructor_id", using: :btree
 
-  create_table "departments", force: true do |t|
+  create_table "departments", id: false, force: true do |t|
+    t.string   "id",         null: false
     t.string   "title"
     t.datetime "created_at"
     t.datetime "updated_at"

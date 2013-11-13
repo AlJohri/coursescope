@@ -1,5 +1,5 @@
 class CreateTerms < ActiveRecord::Migration
-  def change
+  def up
     create_table :terms, id: false do |t|
       t.integer :id
       t.string :title
@@ -9,4 +9,9 @@ class CreateTerms < ActiveRecord::Migration
     end
     execute "ALTER TABLE terms ADD PRIMARY KEY(id);"
   end
+
+  def down
+  	drop_table :terms
+  end
+
 end

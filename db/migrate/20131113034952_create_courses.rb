@@ -1,5 +1,5 @@
 class CreateCourses < ActiveRecord::Migration
-  def change
+  def up
     create_table :courses, id: false do |t|
       t.integer :id
       t.string :title
@@ -17,4 +17,8 @@ class CreateCourses < ActiveRecord::Migration
     end
     execute "ALTER TABLE courses ADD PRIMARY KEY (id);"
   end
+
+  def down
+    drop_table :courses
+  end  
 end
