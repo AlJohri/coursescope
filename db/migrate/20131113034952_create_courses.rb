@@ -1,21 +1,20 @@
 class CreateCourses < ActiveRecord::Migration
   def up
     create_table :courses, id: false do |t|
-      t.integer :id
-      t.string :title
-      t.integer :number
-      t.integer :section
-      t.datetime :start
-      t.datetime :end
-      t.integer :days
+      t.integer :id, null: false
+      t.string :title, null: false
+      t.integer :number, null: false
+      t.integer :section, null: false
       t.string :status
       t.string :type
-      t.references :term, index: true
-      t.references :department, index: true
+      t.references :term, null: false
+      t.references :department, null: false
 
       t.timestamps
     end
     execute "ALTER TABLE courses ADD PRIMARY KEY (id);"
+    add_index :courses, :term
+    add_index :courses, :department
   end
 
   def down

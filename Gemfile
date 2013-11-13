@@ -10,7 +10,7 @@ gem 'coffee-rails', '~> 4.0.0'
 gem 'jquery-rails'
 gem 'turbolinks'
 gem 'jbuilder', '~> 1.2'
-gem 'devise'
+gem 'devise', '3.0.3'
 gem 'slim'
 gem 'active_model_serializers'
 gem 'jquery-ui-rails'
@@ -34,11 +34,13 @@ end
 group :development do
   gem 'quiet_assets'
   gem 'better_errors'
+  gem 'binding_of_caller'
+  gem 'colored'
 end
 
 gem 'figaro'
 gem 'thin'
 gem 'mechanize'
 gem 'foreman'
-
+gem 'tod'
 gem 'sidekiq'

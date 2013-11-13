@@ -2,7 +2,7 @@ class CreateDepartments < ActiveRecord::Migration
   def up
     create_table :departments, id: false do |t|
       t.string :id
-      t.string :title
+      t.string :title, null: false
 
       t.timestamps
     end

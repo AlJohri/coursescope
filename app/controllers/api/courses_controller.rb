@@ -24,7 +24,7 @@ class Api::CoursesController < ApplicationController
   end
 
   def scrape
-    CourseWorker.scrape_courses_async()
+    CourseWorker.perform_async()
     render json: 'scraping has begun'
   end
 

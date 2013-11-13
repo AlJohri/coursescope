@@ -2,8 +2,8 @@ class CreateTerms < ActiveRecord::Migration
   def up
     create_table :terms, id: false do |t|
       t.integer :id
-      t.string :title
-      t.string :year
+      t.string :title, null: false
+      t.string :year, null: false
 
       t.timestamps
     end

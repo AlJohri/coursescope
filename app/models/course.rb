@@ -4,7 +4,9 @@ class Course < ActiveRecord::Base
 
   has_and_belongs_to_many :careers
   has_and_belongs_to_many :instructors
-  has_and_belongs_to_many :classrooms
+
+  has_many :classtimes
+  has_many :classrooms, :through => classtimes
 
   # has_many :requirements
   # has_many :prerequisites, :through => requirements
