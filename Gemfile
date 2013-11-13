@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby "2.0.0"
 
-gem 'rails', '4.0.0'
+gem 'rails', '4.0.1'
 gem 'pg'
 gem 'sass-rails', '~> 4.0.0'
 gem 'uglifier', '>= 1.3.0'
@@ -15,6 +15,7 @@ gem 'slim'
 gem 'active_model_serializers'
 gem 'jquery-ui-rails'
 gem 'acts_as_list'
+
 
 group :doc do
   gem 'sdoc', require: false
@@ -38,5 +39,6 @@ end
 gem 'figaro'
 gem 'thin'
 gem 'mechanize'
-gem 'delayed_job_active_record'
 gem 'foreman'
+
+gem 'sidekiq'
