@@ -7,14 +7,12 @@ class CreateCourses < ActiveRecord::Migration
       t.integer :section, null: false
       t.string :status
       t.string :type
-      t.references :term, null: false
-      t.references :department, null: false
+      t.references :term, null: false, index: true
+      t.references :department, null: false, index: true
 
       t.timestamps
     end
     execute "ALTER TABLE courses ADD PRIMARY KEY (id);"
-    add_index :courses, :term
-    add_index :courses, :department
   end
 
   def down

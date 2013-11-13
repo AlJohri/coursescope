@@ -1,10 +1,9 @@
 class CreateClassrooms < ActiveRecord::Migration
   def change
     create_table :classrooms do |t|
-      t.string :title, null: false
+      t.string :title, null: false, index: true, unique: true
 
       t.timestamps
     end
-    add_index :classrooms, :title, unique: true
   end
 end
