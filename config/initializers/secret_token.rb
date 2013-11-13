@@ -9,4 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-Todo::Application.config.secret_key_base = 'a07502f5f836f69589bf681f3cd55d8c4a89ed24b8ca98f7a1f02aa8371b6c599ec6268472507057d46b1899c53f706e361342ba00ce02579bca4a779f1f3e99'
+CourseScope::Application.config.secret_key_base = 'a07502f5f836f69589bf681f3cd55d8c4a89ed24b8ca98f7a1f02aa8371b6c599ec6268472507057d46b1899c53f706e361342ba00ce02579bca4a779f1f3e99'

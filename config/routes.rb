@@ -1,4 +1,4 @@
-Todo::Application.routes.draw do
+CourseScope::Application.routes.draw do
   devise_for :users  
 
   namespace :api, defaults: {format: :json} do

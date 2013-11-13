@@ -21,10 +21,22 @@ group :doc do
 end
 
 group :production do
-  gem 'shelly-dependencies'
+  # gem 'shelly-dependencies'
 end
 
 group :test do
   gem 'rspec-rails'
   gem 'factory_girl'
 end
+
+
+group :development do
+  gem 'quiet_assets'
+  gem 'better_errors'
+end
+
+gem 'figaro'
+gem 'thin'
+gem 'mechanize'
+gem 'delayed_job_active_record'
+gem 'foreman'
