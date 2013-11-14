@@ -39,7 +39,8 @@ angular.module('todoApp').controller "TodoListController", ($scope, $timeout, $r
 
   $scope.sortableOptions =
     update: (e, ui) ->
-      domIndexOf = (e) -> e.siblings().andSelf().index(e)
+      domIndexOf = (e) ->
+        e.siblings().andSelf().index(e)
       newPriority = domIndexOf(ui.item) + 1
 
       task = ui.item.scope().task
@@ -68,7 +69,8 @@ angular.module('todoApp').controller "TodoListController", ($scope, $timeout, $r
         task.priority = index + 1
 
   raisePriorities = ->
-    angular.forEach $scope.list.tasks, (t) -> t.priority += 1
+    angular.forEach $scope.list.tasks, (t) ->
+      t.priority += 1
 
   lowerPrioritiesBelow = (task) ->
     angular.forEach tasksBelow(task), (t) ->

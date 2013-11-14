@@ -1,5 +1,5 @@
 class Term < ActiveRecord::Base
-	has_many :courses
+  has_many :courses
 
   self.primary_key= :id
 

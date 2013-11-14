@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
   devise :token_authenticatable, :database_authenticatable, :registerable,
-    :recoverable, :rememberable, :trackable, :validatable
+         :recoverable, :rememberable, :trackable, :validatable
 
   has_many :task_lists, foreign_key: :owner_id
 

@@ -30,7 +30,7 @@ class Api::CoursesController < ApplicationController
     doc = worker.get_courses(params)
     if doc
       courses = doc.search("span[id^='DERIVED_CLSRCH_DESCR200$']/text()").to_a
-      render json: courses.map { |course| course = CGI.unescapeHTML(course.to_s).delete!("^\u{0000}-\u{007F}")}.to_json
+      render json: courses.map { |course| course = CGI.unescapeHTML(course.to_s).delete!("^\u{0000}-\u{007F}") }.to_json
       return
     end
 
