@@ -6,7 +6,7 @@ class CourseWorker
 	sidekiq_options :retry => false
 
 	def perform()
-  	careers = Career.all
+  	careers = Career.all[16]
   	deparments = Department.all
 
   	careers.each do |career|
