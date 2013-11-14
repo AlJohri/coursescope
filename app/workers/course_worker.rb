@@ -61,7 +61,7 @@ class CourseWorker
   	parse_courses(data) if data
   end # !> mismatched indentations at 'end' with 'def' at 57
 
-	def get_courses(**args)
+	def get_courses(args = {})
 
     args[:url] ||= "https://ses.ent.northwestern.edu/psc/caesar_4/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL"
     args[:days] ||= MONDAY | TUESDAY | WEDNESDAY | THURSDAY | FRIDAY | SATURDAY | SUNDAY
@@ -256,7 +256,7 @@ class CourseWorker
 		end # end courses
 	end
 
-	def handle_error(error, **args)
+	def handle_error(error, args = {})
 		error = error.to_s
 		error = error.gsub 'The search returns no results that match the criteria specified.', 'No results for specified filters.'
 		error = error.gsub 'Your search will exceed the maximum limit of 200 sections.  Specify additional criteria to continue.', 'Exceeds maximum limit.'
