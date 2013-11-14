@@ -55,15 +55,14 @@ ActiveRecord::Schema.define(version: 20131113165729) do
     t.string   "title",         null: false
     t.integer  "number",        null: false
     t.integer  "section",       null: false
-    t.string   "status"
-    t.string   "type"
+    t.string   "status",        null: false
+    t.string   "category",      null: false
     t.integer  "term_id",       null: false
-    t.integer  "department_id", null: false
+    t.string   "department_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "courses", ["department_id"], name: "index_courses_on_department_id", using: :btree
   add_index "courses", ["term_id"], name: "index_courses_on_term_id", using: :btree
 
   create_table "courses_instructors", id: false, force: true do |t|
@@ -84,9 +83,9 @@ ActiveRecord::Schema.define(version: 20131113165729) do
   create_table "instructors", force: true do |t|
     t.string   "first_name", null: false
     t.string   "last_name",  null: false
+    t.string   "category",   null: false
     t.string   "email"
     t.string   "website"
-    t.string   "type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
