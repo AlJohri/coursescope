@@ -1,0 +1,130 @@
+# $0 SUBJECT
+# $1 CATALOG NUMBER
+# $2 CAREER
+# $3 ONLY OPEN CLASSES? = NO
+# $4 COURSE KEYWORD
+# $5 MEETING START TIME / END TIME
+# $6 DAYS OF THE WEEK? = INCLUDE ANY
+# $7 INSTRUCTOR LAST NAME
+# $8 CLASS NUMBER (OTHERWISE KNOWN AS UNIQUE ID)
+# $9 CAMPUS
+# $10 COURSE COMPONENT (WE CALL THIS CATEGORY)
+# $11 SESSION CODE
+# $12 COURSE ATTRIBUTES
+
+
+# COMPONENT TYPES
+
+# ADV Advocacy Simulation
+# BAL Balancing Section
+# CLK Clerkship
+# CLN Clinical
+# CON Continuance
+# DIS Discussion
+# FLD Field Studies
+# GEN General
+# IND Independent Study
+# LAB Laboratory
+# LEC Lecture
+# LGL Legal Practicum
+# PED Performance/Pedagogy
+# PRA Practicum
+# QIZ Quiz
+# RPA Reporting of Public Affairs
+# RSC Research
+# SEM Seminar
+# SUP Supervision
+# THE Thesis Research
+# TUT Tutorial
+
+# SESSION CODES
+
+# 8W1	Eight Week - First
+# 8W2	Eight Week - Second
+# AY1	Fall Session
+# 5W1	Five Week - First
+# 5W2	Five Week - Second
+# 4W1	Four Week - First
+# 4W4	Four Week - Fourth
+# 4W2	Four Week - Second
+# 4W3	Four Week - Third
+#  M1	Medical 1
+#  M2	Medical 2
+#  M3	Medical 3
+#  M4	Medical 4
+# 9W1	Nine Week - First
+# 9W2	Nine Week - Second
+# 1W1	One Week - First
+# 1W2	One Week - Second
+# 1W3	One Week - Third
+# 1W4	One Week- Fourth
+# OEE	Open Entry/Open Exit
+#   1	Regular Academic Session
+# 7W1	Seven Week - First
+# 7W2	Seven Week - Second
+# 6W1	Six Week - First
+# 6W2	Six Week - Second
+# AY3	Spring Session
+# AY4	Summer Session
+# 10X	Ten Week - Second
+# 3W1	Three Week - First
+# 3W4	Three Week - Fourth
+# 3W2	Three Week - Second
+# 3W3	Three Week - Third
+# 2W1	Two Week - First
+# 2W4	Two Week - Fourth
+# 2W2	Two Week - Second
+# 2W3	Two Week - Third
+# AY2	Winter Session
+# 4Y1	Year Four - First
+# 1Y1	Year One - First
+# 1Y2	Year One - Second
+# 1Y3	Year One - Third
+# 3Y1	Year Three - First
+# 3Y2	Year Three - Second
+# 3Y3	Year Three - Third
+# 2Y1	Year Two - First
+# 2Y2	Year Two - Second
+# 2Y3	Year Two - Third
+
+
+
+# MCW ONLY 	MCS ONLY
+# MITP 	MITP Students Only
+# MMI 	MMI ONLY
+# MMM	MMM Students Only
+# MMSS	MMSS Majors Only
+# MUSIC	Music Majors Only
+# NUQ	Reserved for NU Qatar Students
+
+
+# ATTRIBUTE TYPES. THERE ARE DIFFERENT VALUES FOR EACH TYPE.
+
+# LANG	Language
+# LWPA	Law Practice Areas &amp; Subjects
+# LAWR	Law Reqs and Restrictions
+# MEDL	Med School Locations
+# RSTR	Restrictions
+# CASD	WCAS Distribution Requirement
+
+###########################################################
+
+# ATTRIBUTE VALUES.
+
+# 1 LANGUAGE, 2 LAW PRAC AREAS, 3 LAW REQS AND RESTRIC, 4 MED SCHOOL LOCATIONS
+# TODO LATER
+
+# 5 RESTRICTIONS
+
+# MAJ/MIN 	Department Majors/Minors Only
+# ENGG 	Engineering Students Only
+# ISP 	ISP Students Only
+# 6 WCAS DISTRO REQUIREMENTS
+
+# VALUES 	Ethics &amp; Values Distro Area
+# FORMAL 	Formal Studies Distro Area
+# HIST STUD 	Historical Studies Distro Area
+# INTERDISCP 	Interdiscip Distro - See Rules
+# LIT FA 	Literature &amp; Fine Arts Distro
+# NATSCI 	Natural Sciences Distro Area
+# SOCBEH 	Social &amp; Behavioral Sci Distro

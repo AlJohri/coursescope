@@ -1,12 +1,12 @@
 angular.module('todoApp').controller "DashboardController", ($scope, $routeParams, $location, TaskList) ->
 
-  $scope.init = ->        
+  $scope.init = ->
     @listsService = new TaskList(serverErrorHandler)
     $scope.lists = @listsService.all()
 
   $scope.createList = (name) ->
     @listsService.create name: name, (list) ->
-        $location.url("/task_lists/#{list.id}")
+      $location.url("/task_lists/#{list.id}")
 
   $scope.deleteList = (list, index) ->
     result = confirm "Are you sure you want to remove this list?" 

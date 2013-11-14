@@ -15,6 +15,7 @@ gem 'slim'
 gem 'active_model_serializers'
 gem 'jquery-ui-rails'
 gem 'acts_as_list'
+#gem "coffee-script-redux-debugger", :git => "git://github.com/JetBrains/coffee-script-redux-debugger.git"
 
 
 group :doc do
@@ -36,7 +37,9 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'colored'
-  gem 'debugger'
+  #gem 'debugger'
+  gem 'debase'
+  gem 'ruby-debug-ide'
 end
 
 gem 'figaro'

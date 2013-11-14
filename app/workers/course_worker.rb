@@ -1,10 +1,11 @@
+require 'sidekiq'
+
 class CourseWorker
 
 	# sidekiq worker code
 
 	include Sidekiq::Worker
 	sidekiq_options :retry => false
-
 	def perform()
   	careers = [Career.all[16]]
   	deparments = Department.all
@@ -14,15 +15,18 @@ class CourseWorker
 				scrape_courses("4530", department.id, career.id)
 			end # deparments
 		end # careers
-  end
+  end # !> mismatched indentations at 'end' with 'def' at 10
 
   # coursescope caesar scraper code
 
-	MONDAY = 2 ** 4
-	TUESDAY = 2 ** 3
-	WEDNESDAY = 2 ** 2
-	THURSDAY = 2 ** 1
-	FRIDAY = 2 ** 0  
+  SUNDAY = 2 ** 6
+	MONDAY = 2 ** 5
+	TUESDAY = 2 ** 4
+	WEDNESDAY = 2 ** 3
+	THURSDAY = 2 ** 2
+	FRIDAY = 2 ** 1
+  SATURDAY = 2 ** 0
+
 
 	attr_accessor :agent
 
@@ -48,54 +52,93 @@ class CourseWorker
 		login_form.set_fields(:userid => ENV['user'])
 		login_form.set_fields(:pwd => ENV['pass'])
 		login_form.action = 'https://ses.ent.northwestern.edu/psp/caesar/?cmd=?languageCd=ENG'
-		page = @agent.submit(login_form, login_form.buttons.first)
+		@agent.submit(login_form, login_form.buttons.first)
 		puts "authenticated"
 	end
 
 	def scrape_courses(term, department, career)
-  	data = get_courses(term, department, career)
-  	parse_courses(data, term) if data != false
-  end
+  	data = get_courses(term, department, career) # !> loading in progress, circular require considered harmful - /usr/local/var/rbenv/versions/2.0.0-p247/lib/ruby/gems/2.0.0/gems/sidekiq-2.16.1/lib/sidekiq.rb
+  	parse_courses(data) if data
+  end # !> mismatched indentations at 'end' with 'def' at 57
 
-	def get_courses(term, department, career)
-		url = 'https://ses.ent.northwestern.edu/psc/caesar_4/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL'
+	def get_courses(**args)
+
+    args[:url] ||= "https://ses.ent.northwestern.edu/psc/caesar_4/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL"
+    args[:days] ||= MONDAY | TUESDAY | WEDNESDAY | THURSDAY | FRIDAY | SATURDAY | SUNDAY
+    args[:term] ||= "4530"
+    args[:career] ||= "UGRD"
+    args[:institution] ||= "NWUNV"
+    args[:open_only] ||= "N" # N = no, Y = yes
+    args[:days_matchtype] ||= "J" # J = include any, F = exclude any, I = include only, E = exclude only
+    args[:instructor_matchtype] ||= "E" # B = BEGINS, C = CONTAINS, E = EXACTLY
+    args[:catalog_number_matchtype] ||= "E" # G = gte, E = equal, T = lte
+    args[:start_time_matchtype] ||= "E" # GT, GE = gte, E = equal, LT, LE = lte
+    args[:end_time_matchtype] ||= "E" # GT, GE = gte, E = equal, LT, LE = lte
+    args[:department] ||= "" # e.g. EECS
+    args[:campus] ||= "" # CH, EV, DOHA, OFF
+    args[:keyword] ||= ""
+    args[:start_time] ||= "" # e.g. 13:50
+    args[:end_time] ||= ""  # e.g. 14:50
+    args[:component] ||= "" # e.g. LEC
+    args[:instructor] ||= ""  # e.g. riesbeck
+    args[:session_code] ||= ""
+    args[:catalog_number] ||= "" # e.g. 111-0
+    args[:class_number] ||= "" # Can't get this to work.
+
+    days = args[:days].to_s(2)
+
 		ajax_headers = { 'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8' }
 		params = {
 			"ICAction" => "CLASS_SRCH_WRK2_SSR_PB_CLASS_SRCH",
 			"ICSID" => @icsid,
 			"ICElementNum" => @icelementnum,
 			"ICStateNum" => @icstatenum,
-			"DERIVED_SSTSNAV_SSTS_MAIN_GOTO$180$" => "9999",
-			"CLASS_SRCH_WRK2_INSTITUTION$41$" => "NWUNV",
-			"CLASS_SRCH_WRK2_STRM$44$"=> term,
-			"SSR_CLSRCH_WRK_SUBJECT$0"=> department,
-			"SSR_CLSRCH_WRK_CATALOG_NBR$1" => "",
-			"SSR_CLSRCH_WRK_SSR_EXACT_MATCH1$1" => "E",
-			"SSR_CLSRCH_WRK_ACAD_CAREER$2" => career,
-			"SSR_CLSRCH_WRK_SSR_OPEN_ONLY$chk$3" => "N",
-			"DERIVED_SSTSNAV_SSTS_MAIN_GOTO$152$"=> "9999",
-			"CLASS_SRCH_WRK2_INCLUDE_CLASS_DAYS"=> "J",
-			"CLASS_SRCH_WRK2_MON$chk"=>"Y",
-			"CLASS_SRCH_WRK2_MON"=>"Y",
-			"CLASS_SRCH_WRK2_TUES$chk"=>"Y",
-			"CLASS_SRCH_WRK2_TUES"=>"Y",
-			"CLASS_SRCH_WRK2_WED$chk"=>"Y",
-			"CLASS_SRCH_WRK2_WED"=>"Y",
-			"CLASS_SRCH_WRK2_THURS$chk"=>"Y",
-			"CLASS_SRCH_WRK2_THURS"=>"Y",
-			"CLASS_SRCH_WRK2_FRI$chk"=>"Y",
-			"CLASS_SRCH_WRK2_FRI"=>"Y",
-			"CLASS_SRCH_WRK2_SAT$chk"=>"",
-			"CLASS_SRCH_WRK2_SUN$chk"=>""						
+			"DERIVED_SSTSNAV_SSTS_MAIN_GOTO$160$" => "9999",
+			"CLASS_SRCH_WRK2_INSTITUTION$41$" => args[:institution],
+			"CLASS_SRCH_WRK2_STRM$52$"=> args[:term],
+			"SSR_CLSRCH_WRK_SUBJECT$82$$0"=> args[:department],
+			"SSR_CLSRCH_WRK_SSR_EXACT_MATCH1$1" => args[:catalog_number_matchtype],
+			"SSR_CLSRCH_WRK_CATALOG_NBR$1" => args[:catalog_number],
+			"SSR_CLSRCH_WRK_ACAD_CAREER$2" => args[:career],
+			"SSR_CLSRCH_WRK_SSR_OPEN_ONLY$chk$3" => args[:open_only],
+			"SSR_CLSRCH_WRK_DESCR$4" => args[:keyword],
+			"SSR_CLSRCH_WRK_SSR_START_TIME_OPR$5" => args[:start_time_matchtype],
+			"SSR_CLSRCH_WRK_MEETING_TIME_START$5" => args[:start_time],
+			"SSR_CLSRCH_WRK_SSR_END_TIME_OPR$5" => args[:end_time_matchtype],
+			"SSR_CLSRCH_WRK_MEETING_TIME_END$5" => args[:end_time],
+			"SSR_CLSRCH_WRK_INCLUDE_CLASS_DAYS$6"=> args[:days_matchtype],
+      "SSR_CLSRCH_WRK_SUN$chk$6" => days[0] == 1? "Y" : "N",
+      "SSR_CLSRCH_WRK_SUN$6" => days[0] == 1? "Y" : "N",
+			"SSR_CLSRCH_WRK_MON$chk$6" => days[1] == 1? "Y" : "N",
+			"SSR_CLSRCH_WRK_MON$6" => days[1] == 1? "Y" : "N",
+			"SSR_CLSRCH_WRK_TUES$chk$6" => days[2] == 1? "Y" : "N",
+			"SSR_CLSRCH_WRK_TUES$6" => days[2] == 1? "Y" : "N",
+			"SSR_CLSRCH_WRK_WED$chk$6" => days[3] == 1? "Y" : "N",
+			"SSR_CLSRCH_WRK_WED$6" => days[3] == 1? "Y" : "N",
+			"SSR_CLSRCH_WRK_THURS$chk$6" => days[4] == 1? "Y" : "N",
+			"SSR_CLSRCH_WRK_THURS$6" => days[4] == 1? "Y" : "N",
+			"SSR_CLSRCH_WRK_FRI$chk$6" => days[5] == 1? "Y" : "N",
+			"SSR_CLSRCH_WRK_FRI$6" => days[5] == 1? "Y" : "N",
+			"SSR_CLSRCH_WRK_SAT$chk$6" => days[6] == 1? "Y" : "N",
+			"SSR_CLSRCH_WRK_SAT$6" => days[6] == 1? "Y" : "N",
+			"SSR_CLSRCH_WRK_SSR_EXACT_MATCH2$7" => args[:instructor_matchtype],
+			"SSR_CLSRCH_WRK_LAST_NAME$7" => args[:instructor],
+			"SSR_CLSRCH_WRK_CLASS_NBR$8" => args[:class_number],
+			"SSR_CLSRCH_WRK_CAMPUS$9" => args[:campus],
+			"SSR_CLSRCH_WRK_SSR_COMPONENT$10" => args[:component],
+			"SSR_CLSRCH_WRK_SESSION_CODE$11" => args[:session_code],
+			"SSR_CLSRCH_WRK_CRSE_ATTR$12" => "",
+			"SSR_CLSRCH_WRK_CRSE_ATTR_VALUE$12" => "",
+			"DERIVED_SSTSNAV_SSTS_MAIN_GOTO$188$"=> "9999"
 		}
 
-		response = @agent.post(url, params, ajax_headers)
+		response = @agent.post(args['url'], params, ajax_headers)
 		doc = Nokogiri::HTML(response.body)
 
 		error = doc.search("span[id^='DERIVED_CLSMSG_ERROR_TEXT']/text()")
 
-		if (error.present?)
-			handle_error(error, department)
+		if error.present?
+			handle_error(error, args)
 			return false
 		end
 
@@ -103,12 +146,12 @@ class CourseWorker
 
 	end  
 	
-	def parse_courses(doc, term)
+	def parse_courses(doc)
 
 		courses = doc.search("span[id^='DERIVED_CLSRCH_DESCR200$']/text()").to_a
 
-		locationCounter = 0
-		sectionCounter = 0
+		location_counter = 0
+		section_counter = 0
 
 		courses.each_with_index do |x,i| 
 			courses[i] = CGI.unescapeHTML(courses[i].to_s).delete!("^\u{0000}-\u{007F}")
@@ -117,47 +160,67 @@ class CourseWorker
       number = $3
       title = $4
 			sections = doc.search("div[id='win6div$ICField242GP$" + i.to_s + "'] > span[class='PSGRIDCOUNTER']/text()").to_s.gsub(/1.*of\s/, "").to_i
-			locations = doc.search("div[id='win6divSSR_CLSRCH_MTG1$" + locationCounter.to_s + "'] > table > tr")
-
-			locLength = locations.length - 1
+			locations = doc.search("div[id='win6divSSR_CLSRCH_MTG1$" + location_counter.to_s + "'] > table > tr").length - 1
 
 			puts ""
 			puts "#{department} #{number} #{title} has #{sections} sections"
 
 			sections.times do |blah1|
 
-				uniqueid_sec = doc.search("a[id='DERIVED_CLSRCH_SSR_CLASSNAME_LONG$" + sectionCounter.to_s + "']").text
+				uniqueid_sec = doc.search("a[id='DERIVED_CLSRCH_SSR_CLASSNAME_LONG$" + section_counter.to_s + "']").text
 				uniqueid_sec =~ /(\w+)-(\w+)\((\d+)\)/
 				
-				section = $1
-      	category = $2
-      	unique_id = $3
+				section = $1 # !> assigned but unused variable - section
+      	category = $2 # !> assigned but unused variable - category
+      	unique_id = $3 # !> assigned but unused variable - unique_id
 
-      	status = doc.search("div[id='win6divDERIVED_CLSRCH_SSR_STATUS_LONG$" + sectionCounter.to_s + "'] > div > img")[0]['alt']
+      	status = doc.search("div[id='win6divDERIVED_CLSRCH_SSR_STATUS_LONG$" + section_counter.to_s + "'] > div > img")[0]['alt']
 
-				puts "-- #{uniqueid_sec} #{status} has #{locLength} locations"
+				puts "-- #{uniqueid_sec} #{status} has #{locations} locations"
 
-				course = Course.find_or_initialize_by(id: unique_id)
+				# course = Course.find_or_initialize_by(id: unique_id)
 
 				# debugger
 
-				course.update_attributes(
-				   title: title,
-				   number: number,
-				   section: section,
-				   status: status,
-				   category: category,
-				   term: Term.find_by_id(term),
-				   department: Department.find_by_id(department)
-				)
+				# course.update_attributes(
+				#    title: title,
+				#    number: number,
+				#    section: section,
+				#    status: status,
+				#    category: category,
+				#    term: Term.find_by_id(term),
+				#    department: Department.find_by_id(department)
+				# )
 
-				locLength.times do |blah2|
+        locations.times do |blah2|
 
-					instructor = doc.search("span[id='MTG_INSTR$" + locationCounter.to_s + "']").text
-					room = doc.search("span[id='MTG_ROOM$" + locationCounter.to_s + "']").text
-					dates = doc.search("span[id='MTG_TOPIC$" + locationCounter.to_s + "']").text
-					seats = doc.search("span[id='NW_DERIVED_SS3_AVAILABLE_SEATS$" + locationCounter.to_s + "']").text
-	      	days_time = doc.search("span[id='MTG_DAYTIME$" + locationCounter.to_s + "']").text
+					instructor = doc.search("span[id='MTG_INSTR$" + location_counter.to_s + "']").text
+					puts doc.search("span[id='MTG_INSTR$" + location_counter.to_s + "']")
+
+					if instructor.include? ","
+						puts "LOOK AT ME I HAVE LOTS OF INSTRUCTORS"
+						puts instructor
+						puts "END"
+					else
+						if instructor == "Staff"
+							puts "Name: " + instructor
+						elsif	instructor.split.length == 2
+							puts "FNAME: " + instructor.split[0]
+							puts "FNAME: " + instructor.split[1]
+						elsif instructor.split.length == 3
+							puts "FNAME: " + instructor.split[0]
+							puts "MNAME: " + instructor.split[1]
+							puts "FNAME: " + instructor.split[2]							
+						else
+							puts "ERROR ERROR ERROR ERROR ERROR NOOOOOO"
+							puts instructor
+						end
+					end
+
+					room = doc.search("span[id='MTG_ROOM$" + location_counter.to_s + "']").text
+					dates = doc.search("span[id='MTG_TOPIC$" + location_counter.to_s + "']").text
+					seats = doc.search("span[id='NW_DERIVED_SS3_AVAILABLE_SEATS$" + location_counter.to_s + "']").text
+	      	days_time = doc.search("span[id='MTG_DAYTIME$" + location_counter.to_s + "']").text
 
 					if (days_time != "TBA")
 						days_time =~ /^(\w+) (\d\d?:\d\d(AM|PM)) - (\d\d?:\d\d(AM|PM))/
@@ -168,33 +231,38 @@ class CourseWorker
 						days = "TBA"
 						start_time = "TBA"
 						end_time = "TBA"
-					end
+          end
 
-		  		mo = days.include? ("Mo")
-		  		tu = days.include? ("Tu")
-		      we = days.include? ("We")
-		      th = days.include? ("Th")
-		      fr = days.include? ("Fr")
+          days = 0
+
+          days += SUNDAY if days.include? ("Su")
+          days += MONDAY if days.include? ("Mo")
+          days += TUESDAY if days.include? ("Tu")
+          days += WEDNESDAY if days.include? ("We")
+          days += THURSDAY if days.include? ("Th")
+		      days += FRIDAY if days.include? ("Fr")
+          days += SATURDAY if days.include? ("Sa")
+
+		      #puts mo + tu + we + th + fr
 
 					puts "-------- #{room} #{instructor} #{dates} #{seats} #{days_time}"
 				
-					locationCounter += 1
+					location_counter += 1
 				end # end locations
 				
-				sectionCounter += 1
+				section_counter += 1
 
 			end # end sections
 		end # end courses
 	end
 
-	def handle_error(error, department)
+	def handle_error(error, **args)
 		error = error.to_s
-		error = error.gsub("The search returns no results that match the criteria specified.", "No courses this quarter.")
-		error = error.gsub("Your search will exceed the maximum limit of 200 sections.  Specify additional criteria to continue.", "Exceeds maximum limit.")
-		# error_counter+=1
-		# print "[" + error_counter.to_s + "] " + subject + ": "
+		error = error.gsub 'The search returns no results that match the criteria specified.', 'No results for specified filters.'
+		error = error.gsub 'Your search will exceed the maximum limit of 200 sections.  Specify additional criteria to continue.', 'Exceeds maximum limit.'
 		
-		print department + ": "
+		puts "For the following filters: "
+    puts args
 		if (error.include? "No courses this quarter.")
 			puts error
 		elsif (error.include? "Exceeds maximum limit.")
@@ -215,3 +283,8 @@ end
 #     elm.attributes[k].text
 #   end
 # end
+
+if __FILE__ == $0
+    
+    puts 1 + 1
+end

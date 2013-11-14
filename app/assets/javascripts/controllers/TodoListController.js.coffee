@@ -9,6 +9,7 @@ angular.module('todoApp').controller "TodoListController", ($scope, $timeout, $r
     $scope.list = @listService.find $routeParams.list_id
 
   $scope.addTask = ->
+    alert("what are you doing!!")
     raisePriorities()
     task = @taskService.create(description: $scope.taskDescription)
     task.priority = 1

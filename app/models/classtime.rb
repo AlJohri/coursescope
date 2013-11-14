@@ -9,6 +9,6 @@ class Classtime < ActiveRecord::Base
   validates :classroom_id, presence: true
   validates :start, presence: true
   validates :end, presence: true
-  validates :days, presence: true # must be between 1 and 16
+  validates :days, presence: true
 
 end
