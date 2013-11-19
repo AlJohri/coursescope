@@ -183,19 +183,19 @@ class CourseWorker
 
         puts "-- #{uniqueid_sec} #{status} has #{locations} locations"
 
-        # course = Course.find_or_initialize_by(id: unique_id)
+        course = Course.find_or_initialize_by(id: unique_id)
 
         # debugger
 
-        # course.update_attributes(
-        #    title: title,
-        #    number: number,
-        #    section: section,
-        #    status: status,
-        #    category: category,
-        #    term: Term.find_by_id(term),
-        #    department: Department.find_by_id(department)
-        # )
+        course.update_attributes(
+           title: title,
+           number: number,
+           section: section,
+           status: status,
+           category: category,
+           term: Term.find_by_id(term),
+           department: Department.find_by_id(department)
+        )
 
         locations.times do |blah2|
 
@@ -206,7 +206,7 @@ class CourseWorker
 
           instructors.split(", \n").each do |instructor|
             if instructor == "Staff"
-              instructor_ids << Instructor.find_or_create_by(:first_name => "Staff", :category => "Unknown")
+              instructor_ids << Instructor.find_or_create_by(:first_name => "Staff", :last_name => "Staff", :category => "Unknown")
             elsif  instructor.split.length == 2
               instructor_ids << Instructor.find_or_create_by(:first_name => instructor.split[0], :last_name => instructor.split[1], :category => "Professor")
             elsif instructor.split.length == 3
