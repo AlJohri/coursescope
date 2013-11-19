@@ -40,8 +40,8 @@ ActiveRecord::Schema.define(version: 20131113165729) do
   create_table "classtimes", force: true do |t|
     t.integer  "course_id",    null: false
     t.integer  "classroom_id", null: false
-    t.time     "start",        null: false
-    t.time     "end",          null: false
+    t.time     "start_time"
+    t.time     "end_time"
     t.integer  "days",         null: false
     t.datetime "created_at"
     t.datetime "updated_at"

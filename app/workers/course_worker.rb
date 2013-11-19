@@ -222,6 +222,8 @@ class CourseWorker
           seats = doc.search("span[id='NW_DERIVED_SS3_AVAILABLE_SEATS$" + location_counter.to_s + "']").text
           days_time = doc.search("span[id='MTG_DAYTIME$" + location_counter.to_s + "']").text
 
+          Classroom.find_or_create_by(:title => room)
+
           if (days_time != "TBA")
             days_time =~ /^(\w+) (\d\d?:\d\d(AM|PM)) - (\d\d?:\d\d(AM|PM))/
             days = $1
@@ -243,7 +245,34 @@ class CourseWorker
           days_int += FRIDAY if days.include? ("Fr")
           days_int += SATURDAY if days.include? ("Sa")
 
+          # if(start_time != "TBA")
+          #   start_time = TimeOfDay.parse(start_time)
+          # else
+          #   start_time = nil
+          # end
+          # if(end_time != "TBA")
+          #   end_time = TimeOfDay.parse(end_time)
+          # else
+          #   end_time = nil
+          # end
 
+          start_time = start_time == "TBA" ? nil : TimeOfDay.parse(start_time)
+          end_time = end_time == "TBA" ? nil : TimeOfDay.parse(end_time)
+
+          puts start_time
+          puts 'COW +++++'
+          puts Course.find_by_id(unique_id)
+          puts 'MOO ====='
+          gaga = Classroom.find_by_title(room)
+          puts gaga.id
+          puts 'lllllllllllll-----'
+          puts days_int
+
+          #Does not support classes with exact ID meeting twice in same day...
+          Classtime.find_or_create_by(:course_id => unique_id, :classroom_id => Classroom.find_by_title(room).id, :days =>days_int ) do |c|
+            c.start_time = start_time
+            c.end_time = end_time
+          end
 
           #puts mo + tu + we + th + fr
 

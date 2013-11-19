@@ -3,8 +3,8 @@ class CreateClasstimes < ActiveRecord::Migration
     create_table :classtimes do |t|
       t.references :course, null: false, index: true
       t.references :classroom, null: false, index: true
-      t.time :start, null: false
-      t.time :end, null: false
+      t.time :start_time 
+      t.time :end_time
       t.integer :days, null: false
 
       t.timestamps
