@@ -48,3 +48,4 @@ gem 'mechanize'
 gem 'foreman'
 gem 'tod'
 gem 'sidekiq'
+gem "rails-erd"
