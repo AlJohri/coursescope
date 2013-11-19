@@ -81,16 +81,17 @@ ActiveRecord::Schema.define(version: 20131113165729) do
   end
 
   create_table "instructors", force: true do |t|
-    t.string   "first_name", null: false
-    t.string   "last_name",  null: false
-    t.string   "category",   null: false
+    t.string   "first_name",  null: false
+    t.string   "middle_name"
+    t.string   "last_name",   null: false
+    t.string   "category",    null: false
     t.string   "email"
     t.string   "website"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "instructors", ["first_name", "last_name"], name: "index_instructors_on_first_name_and_last_name", unique: true, using: :btree
+  add_index "instructors", ["first_name", "middle_name", "last_name"], name: "index_instructors_on_first_name_and_middle_name_and_last_name", unique: true, using: :btree
 
   create_table "task_lists", force: true do |t|
     t.integer  "owner_id"

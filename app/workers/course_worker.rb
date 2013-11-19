@@ -199,28 +199,26 @@ class CourseWorker
 
         locations.times do |blah2|
 
-          instructor = doc.search("span[id='MTG_INSTR$" + location_counter.to_s + "']").text
+          instructors = doc.search("span[id='MTG_INSTR$" + location_counter.to_s + "']").text
           puts doc.search("span[id='MTG_INSTR$" + location_counter.to_s + "']")
 
-          if instructor.include? ","
-            puts "LOOK AT ME I HAVE LOTS OF INSTRUCTORS"
-            puts instructor
-            puts "END"
-          else
+          instructor_ids = []
+
+          instructors.split(", \n").each do |instructor|
             if instructor == "Staff"
-              puts "Name: " + instructor
+              instructor_ids << Instructor.find_or_create_by(:first_name => "Staff", :category => "Unknown")
             elsif  instructor.split.length == 2
-              puts "FNAME: " + instructor.split[0]
-              puts "FNAME: " + instructor.split[1]
+              instructor_ids << Instructor.find_or_create_by(:first_name => instructor.split[0], :last_name => instructor.split[1], :category => "Professor")
             elsif instructor.split.length == 3
-              puts "FNAME: " + instructor.split[0]
-              puts "MNAME: " + instructor.split[1]
-              puts "FNAME: " + instructor.split[2]
+              instructor_ids << Instructor.find_or_create_by(:first_name => instructor.split[0], :middle_name => instructor.split[1], :last_name => instructor.split[2], :category => "Professor")
             else
               puts "ERROR ERROR ERROR ERROR ERROR NOOOOOO"
               puts instructor
+              puts "ERROR ERROR ERROR ERROR ERROR NOOOOOO"
             end
           end
+
+          puts instructor_ids
 
           room = doc.search("span[id='MTG_ROOM$" + location_counter.to_s + "']").text
           dates = doc.search("span[id='MTG_TOPIC$" + location_counter.to_s + "']").text
@@ -238,19 +236,19 @@ class CourseWorker
             end_time = "TBA"
           end
 
-          days = 0
+          days_int = 0
 
-          days += SUNDAY if days.include? ("Su")
-          days += MONDAY if days.include? ("Mo")
-          days += TUESDAY if days.include? ("Tu")
-          days += WEDNESDAY if days.include? ("We")
-          days += THURSDAY if days.include? ("Th")
-          days += FRIDAY if days.include? ("Fr")
-          days += SATURDAY if days.include? ("Sa")
+          days_int += SUNDAY if days.include? ("Su")
+          days_int += MONDAY if days.include? ("Mo")
+          days_int += TUESDAY if days.include? ("Tu")
+          days_int += WEDNESDAY if days.include? ("We")
+          days_int += THURSDAY if days.include? ("Th")
+          days_int += FRIDAY if days.include? ("Fr")
+          days_int += SATURDAY if days.include? ("Sa")
 
           #puts mo + tu + we + th + fr
 
-          puts "-------- #{room} #{instructor} #{dates} #{seats} #{days_time}"
+          #puts "-------- #{room} #{instructor} #{dates} #{seats} #{days_time}"
 
           location_counter += 1
         end # end locations
