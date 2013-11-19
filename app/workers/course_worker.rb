@@ -60,8 +60,8 @@ class CourseWorker
   end
 
   def scrape_courses(term, department, career)
-    data = get_courses(term, department, career) # !> loading in progress, circular require considered harmful - /usr/local/var/rbenv/versions/2.0.0-p247/lib/ruby/gems/2.0.0/gems/sidekiq-2.16.1/lib/sidekiq.rb
-    parse_courses(data) if data
+    data = get_courses({term: term, department: department, career: career})
+    parse_courses(data, term) if data
   end
 
   # !> mismatched indentations at 'end' with 'def' at 57
@@ -151,7 +151,7 @@ class CourseWorker
 
   end
 
-  def parse_courses(doc)
+  def parse_courses(doc, term)
 
     courses = doc.search("span[id^='DERIVED_CLSRCH_DESCR200$']/text()").to_a
 
@@ -184,9 +184,6 @@ class CourseWorker
         puts "-- #{uniqueid_sec} #{status} has #{locations} locations"
 
         course = Course.find_or_initialize_by(id: unique_id)
-
-        # debugger
-
         course.update_attributes(
            title: title,
            number: number,
@@ -245,6 +242,8 @@ class CourseWorker
           days_int += THURSDAY if days.include? ("Th")
           days_int += FRIDAY if days.include? ("Fr")
           days_int += SATURDAY if days.include? ("Sa")
+
+
 
           #puts mo + tu + we + th + fr
 
