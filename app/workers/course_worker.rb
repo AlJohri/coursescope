@@ -9,7 +9,7 @@ class CourseWorker
 
   def perform()
     careers = [Career.all[16]]
-    deparments = Department.all
+    deparments = Department.all # [Department.all[X]] 
 
     careers.each do |career|
       deparments.each do |department|
@@ -161,7 +161,6 @@ class CourseWorker
       number = $3
       title = $4
       sections = doc.search("div[id='win6div$ICField244GP$" + i.to_s + "'] > span[class='PSGRIDCOUNTER']/text()").to_s.gsub(/1.*of\s/, "").to_i
-      locations = doc.search("div[id='win6divSSR_CLSRCH_MTG1$" + location_counter.to_s + "'] > table > tr").length - 1
 
       puts ""
       puts "#{department} #{number} #{title} has #{sections} sections"
@@ -176,6 +175,8 @@ class CourseWorker
         unique_id = $3
 
         status = doc.search("div[id='win6divDERIVED_CLSRCH_SSR_STATUS_LONG$" + section_counter.to_s + "'] > div > img")[0]['alt']
+
+        locations = doc.search("div[id='win6divSSR_CLSRCH_MTG1$" + section_counter.to_s + "'] > table > tr").length - 1
 
         puts "-- #{uniqueid_sec} #{status} has #{locations} locations"
 
