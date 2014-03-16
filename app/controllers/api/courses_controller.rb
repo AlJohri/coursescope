@@ -24,7 +24,7 @@ class Api::CoursesController < ApplicationController
   end
 
   # Sample URL
-  # http://localhost:3000/api/courses/scrape?department=EECS&term=4530
+  # http://localhost:3000/api/courses/scrape?department=EECS&term=4540
   def scrape
     worker = CourseWorker.new
     doc = worker.get_courses(params)

@@ -13,12 +13,10 @@ class CourseWorker
 
     careers.each do |career|
       deparments.each do |department|
-        scrape_courses("4530", department.id, career.id)
+        scrape_courses("4540", department.id, career.id)
       end # deparments
     end # careers
   end
-
-  # !> mismatched indentations at 'end' with 'def' at 10
 
   # coursescope caesar scraper code
 
@@ -63,8 +61,6 @@ class CourseWorker
     data = get_courses({term: term, department: department, career: career})
     parse_courses(data, term) if data
   end
-
-  # !> mismatched indentations at 'end' with 'def' at 57
 
   def get_courses(args = {})
 
@@ -164,7 +160,7 @@ class CourseWorker
       department = $1
       number = $3
       title = $4
-      sections = doc.search("div[id='win6div$ICField242GP$" + i.to_s + "'] > span[class='PSGRIDCOUNTER']/text()").to_s.gsub(/1.*of\s/, "").to_i
+      sections = doc.search("div[id='win6div$ICField244GP$" + i.to_s + "'] > span[class='PSGRIDCOUNTER']/text()").to_s.gsub(/1.*of\s/, "").to_i
       locations = doc.search("div[id='win6divSSR_CLSRCH_MTG1$" + location_counter.to_s + "'] > table > tr").length - 1
 
       puts ""
@@ -175,9 +171,9 @@ class CourseWorker
         uniqueid_sec = doc.search("a[id='DERIVED_CLSRCH_SSR_CLASSNAME_LONG$" + section_counter.to_s + "']").text
         uniqueid_sec =~ /(\w+)-(\w+)\((\d+)\)/
 
-        section = $1 # !> assigned but unused variable - section
-        category = $2 # !> assigned but unused variable - category
-        unique_id = $3 # !> assigned but unused variable - unique_id
+        section = $1
+        category = $2
+        unique_id = $3
 
         status = doc.search("div[id='win6divDERIVED_CLSRCH_SSR_STATUS_LONG$" + section_counter.to_s + "'] > div > img")[0]['alt']
 
@@ -197,17 +193,29 @@ class CourseWorker
         locations.times do |blah2|
 
           instructors = doc.search("span[id='MTG_INSTR$" + location_counter.to_s + "']").text
-          puts doc.search("span[id='MTG_INSTR$" + location_counter.to_s + "']")
 
           instructor_ids = []
 
+          # Please note this does not account for roman numerals after names
+          # example: Willie Jones III (currently ID 744)
+          # also confirm this is working for R P Chang (currently ID 840)
+          # Suzan van der Lee ERROR ERROR!! EARTH 399-0
+          # Ronald Ray Braeutigam ERROR ERROR (not sure why??) ECON 310-1
+          # Susan Caplan Oloroso, # CRDV 301-0
+          # Seth Magletymire, # ENVR_POL 390-0
           instructors.split(", \n").each do |instructor|
             if instructor == "Staff"
-              instructor_ids << Instructor.find_or_create_by(:first_name => "Staff", :last_name => "Staff", :category => "Unknown")
+              instr = Instructor.find_or_initialize_by(:first_name => "Staff", :last_name => "Staff", :category => "Unknown")
+              instr.save
+              instructor_ids << instr
             elsif  instructor.split.length == 2
-              instructor_ids << Instructor.find_or_create_by(:first_name => instructor.split[0], :last_name => instructor.split[1], :category => "Professor")
+              instr = Instructor.find_or_initialize_by(:first_name => instructor.split[0], :last_name => instructor.split[1], :category => "Professor")
+              instr.save
+              instructor_ids << instr
             elsif instructor.split.length == 3
-              instructor_ids << Instructor.find_or_create_by(:first_name => instructor.split[0], :middle_name => instructor.split[1], :last_name => instructor.split[2], :category => "Professor")
+              instr = Instructor.find_or_initialize_by(:first_name => instructor.split[0], :middle_name => instructor.split[1], :last_name => instructor.split[2], :category => "Professor")
+              instr.save
+              instructor_ids << instr
             else
               puts "ERROR ERROR ERROR ERROR ERROR NOOOOOO"
               puts instructor
@@ -215,14 +223,13 @@ class CourseWorker
             end
           end
 
-          puts instructor_ids
-
           room = doc.search("span[id='MTG_ROOM$" + location_counter.to_s + "']").text
           dates = doc.search("span[id='MTG_TOPIC$" + location_counter.to_s + "']").text
           seats = doc.search("span[id='NW_DERIVED_SS3_AVAILABLE_SEATS$" + location_counter.to_s + "']").text
           days_time = doc.search("span[id='MTG_DAYTIME$" + location_counter.to_s + "']").text
 
-          Classroom.find_or_create_by(:title => room)
+          classroom = Classroom.find_or_initialize_by(:title => room)
+          classroom.save
 
           if (days_time != "TBA")
             days_time =~ /^(\w+) (\d\d?:\d\d(AM|PM)) - (\d\d?:\d\d(AM|PM))/
@@ -249,14 +256,11 @@ class CourseWorker
           end_time = end_time == "TBA" ? nil : TimeOfDay.parse(end_time)
 
           #Does not support classes with exact ID meeting twice in same day...
-          Classtime.find_or_create_by(:course_id => unique_id, :classroom_id => Classroom.find_by_title(room).id, :days =>days_int ) do |c|
+          classtime = Classtime.find_or_initialize_by(:course_id => unique_id, :classroom_id => Classroom.find_by_title(room).id, :days =>days_int ) do |c|
             c.start_time = start_time
             c.end_time = end_time
           end
-
-          #puts mo + tu + we + th + fr
-
-          #puts "-------- #{room} #{instructor} #{dates} #{seats} #{days_time}"
+          classtime.save
 
           location_counter += 1
         end # end locations
