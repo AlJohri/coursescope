@@ -4,6 +4,7 @@
 //= require jquery.ui.sortable
 //= require turbolinks
 //= require lib/angular.min
+//= require lib/angular-route.min
 //= require lib/angular-resource.min
 //= require todoApp
 //= require_tree .
