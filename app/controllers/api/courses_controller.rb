@@ -1,26 +1,11 @@
-class Api::CoursesController < ApplicationController
+class Api::CoursesController < Api::BaseController
 
   def index
     render json: Course.all
   end
 
-  # def create
-  #   course = Course.create!(safe_params)
-  #   render json: course, status: 201
-  # end
-
-  # def update
-  #   course.update_attributes(safe_params)
-  #   render nothing: true, status: 204
-  # end
-
-  # def destroy
-  #   course.destroy
-  #   render nothing: true, status: 204
-  # end
-
   def show
-    render json: course
+    render json: course.as_json(:include => [:classtimes, :instructors, :classrooms])
   end
 
   # Sample URL
