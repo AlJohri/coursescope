@@ -1,5 +1,5 @@
 # Disables/enables uiSortable depending on value of boolean attribute.
-angular.module('todoApp').directive 'uiSortableExt', ->
+angular.module('app').directive 'uiSortableExt', ->
   restrict: 'A'
   link: (scope, element, attrs) ->
     toggleSortable = ->

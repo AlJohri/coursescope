@@ -9,11 +9,11 @@ class CourseWorker
 
   def perform()
     careers = [Career.all[16]]
-    deparments = Department.all # [Department.all[X]] 
+    deparments = Department.all # Department.all # [Department.all[49]] 
 
     careers.each do |career|
       deparments.each do |department|
-        scrape_courses("4540", department.id, career.id)
+        scrape_courses("4560", department.id, career.id)
       end # deparments
     end # careers
   end
@@ -27,7 +27,6 @@ class CourseWorker
   THURSDAY = 2 ** 2
   FRIDAY = 2 ** 1
   SATURDAY = 2 ** 0
-
 
   attr_accessor :agent
 
@@ -59,13 +58,14 @@ class CourseWorker
 
   def scrape_courses(term, department, career)
     data = get_courses({term: term, department: department, career: career})
+    puts data
     parse_courses(data, term) if data
   end
 
   def get_courses(args = {})
 
     args[:url] ||= "https://ses.ent.northwestern.edu/psc/caesar_4/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL"
-    args[:days] ||= MONDAY | TUESDAY | WEDNESDAY | THURSDAY | FRIDAY | SATURDAY | SUNDAY
+    args[:days] ||= SUNDAY | MONDAY | TUESDAY | WEDNESDAY | THURSDAY | FRIDAY | SATURDAY
     args[:term] ||= "4530"
     args[:career] ||= "UGRD"
     args[:institution] ||= "NWUNV"
@@ -90,47 +90,47 @@ class CourseWorker
 
     ajax_headers = {'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8'}
     params = {
-        "ICAction" => "CLASS_SRCH_WRK2_SSR_PB_CLASS_SRCH",
+        "ICAction" => 'CLASS_SRCH_WRK2_SSR_PB_CLASS_SRCH',
         "ICSID" => @icsid,
         "ICElementNum" => @icelementnum,
         "ICStateNum" => @icstatenum,
-        "DERIVED_SSTSNAV_SSTS_MAIN_GOTO$160$" => "9999",
+        "DERIVED_SSTSNAV_SSTS_MAIN_GOTO$162$" => '9999',
         "CLASS_SRCH_WRK2_INSTITUTION$41$" => args[:institution],
-        "CLASS_SRCH_WRK2_STRM$52$" => args[:term],
-        "SSR_CLSRCH_WRK_SUBJECT$82$$0" => args[:department],
-        "SSR_CLSRCH_WRK_SSR_EXACT_MATCH1$1" => args[:catalog_number_matchtype],
+        "CLASS_SRCH_WRK2_STRM$53$" => args[:term],
+        "SSR_CLSRCH_WRK_SUBJECT_SRCH$0" => args[:department],
+        "SSR_CLSRCH_WRK_SSR_EXACT_MATCH1$1" => 'C', # args[:catalog_number_matchtype],
         "SSR_CLSRCH_WRK_CATALOG_NBR$1" => args[:catalog_number],
         "SSR_CLSRCH_WRK_ACAD_CAREER$2" => args[:career],
         "SSR_CLSRCH_WRK_SSR_OPEN_ONLY$chk$3" => args[:open_only],
-        "SSR_CLSRCH_WRK_DESCR$4" => args[:keyword],
-        "SSR_CLSRCH_WRK_SSR_START_TIME_OPR$5" => args[:start_time_matchtype],
-        "SSR_CLSRCH_WRK_MEETING_TIME_START$5" => args[:start_time],
-        "SSR_CLSRCH_WRK_SSR_END_TIME_OPR$5" => args[:end_time_matchtype],
-        "SSR_CLSRCH_WRK_MEETING_TIME_END$5" => args[:end_time],
-        "SSR_CLSRCH_WRK_INCLUDE_CLASS_DAYS$6" => args[:days_matchtype],
-        "SSR_CLSRCH_WRK_SUN$chk$6" => days[0] == 1 ? "Y" : "N",
-        "SSR_CLSRCH_WRK_SUN$6" => days[0] == 1 ? "Y" : "N",
-        "SSR_CLSRCH_WRK_MON$chk$6" => days[1] == 1 ? "Y" : "N",
-        "SSR_CLSRCH_WRK_MON$6" => days[1] == 1 ? "Y" : "N",
-        "SSR_CLSRCH_WRK_TUES$chk$6" => days[2] == 1 ? "Y" : "N",
-        "SSR_CLSRCH_WRK_TUES$6" => days[2] == 1 ? "Y" : "N",
-        "SSR_CLSRCH_WRK_WED$chk$6" => days[3] == 1 ? "Y" : "N",
-        "SSR_CLSRCH_WRK_WED$6" => days[3] == 1 ? "Y" : "N",
-        "SSR_CLSRCH_WRK_THURS$chk$6" => days[4] == 1 ? "Y" : "N",
-        "SSR_CLSRCH_WRK_THURS$6" => days[4] == 1 ? "Y" : "N",
-        "SSR_CLSRCH_WRK_FRI$chk$6" => days[5] == 1 ? "Y" : "N",
-        "SSR_CLSRCH_WRK_FRI$6" => days[5] == 1 ? "Y" : "N",
-        "SSR_CLSRCH_WRK_SAT$chk$6" => days[6] == 1 ? "Y" : "N",
-        "SSR_CLSRCH_WRK_SAT$6" => days[6] == 1 ? "Y" : "N",
-        "SSR_CLSRCH_WRK_SSR_EXACT_MATCH2$7" => args[:instructor_matchtype],
-        "SSR_CLSRCH_WRK_LAST_NAME$7" => args[:instructor],
-        "SSR_CLSRCH_WRK_CLASS_NBR$8" => args[:class_number],
-        "SSR_CLSRCH_WRK_CAMPUS$9" => args[:campus],
-        "SSR_CLSRCH_WRK_SSR_COMPONENT$10" => args[:component],
-        "SSR_CLSRCH_WRK_SESSION_CODE$11" => args[:session_code],
-        "SSR_CLSRCH_WRK_CRSE_ATTR$12" => "",
-        "SSR_CLSRCH_WRK_CRSE_ATTR_VALUE$12" => "",
-        "DERIVED_SSTSNAV_SSTS_MAIN_GOTO$188$" => "9999"
+        # "SSR_CLSRCH_WRK_DESCR$4" => args[:keyword],
+        # "SSR_CLSRCH_WRK_SSR_START_TIME_OPR$5" => args[:start_time_matchtype],
+        # "SSR_CLSRCH_WRK_MEETING_TIME_START$5" => args[:start_time],
+        # "SSR_CLSRCH_WRK_SSR_END_TIME_OPR$5" => args[:end_time_matchtype],
+        # "SSR_CLSRCH_WRK_MEETING_TIME_END$5" => args[:end_time],
+        # "SSR_CLSRCH_WRK_INCLUDE_CLASS_DAYS$6" => args[:days_matchtype],
+        # "SSR_CLSRCH_WRK_SUN$chk$6" => days[0] == 1 ? 'Y' : 'N',
+        # "SSR_CLSRCH_WRK_SUN$6" => days[0] == 1 ? 'Y' : 'N',
+        # "SSR_CLSRCH_WRK_MON$chk$6" => days[1] == 1 ? 'Y' : 'N',
+        # "SSR_CLSRCH_WRK_MON$6" => days[1] == 1 ? 'Y' : 'N',
+        # "SSR_CLSRCH_WRK_TUES$chk$6" => days[2] == 1 ? 'Y' : 'N',
+        # "SSR_CLSRCH_WRK_TUES$6" => days[2] == 1 ? 'N' : 'N',
+        # "SSR_CLSRCH_WRK_WED$chk$6" => days[3] == 1 ? 'Y' : 'N',
+        # "SSR_CLSRCH_WRK_WED$6" => days[3] == 1 ? 'Y' : 'N',
+        # "SSR_CLSRCH_WRK_THURS$chk$6" => days[4] == 1 ? 'Y' : 'N',
+        # "SSR_CLSRCH_WRK_THURS$6" => days[4] == 1 ? 'Y' : 'N',
+        # "SSR_CLSRCH_WRK_FRI$chk$6" => days[5] == 1 ? 'Y' : 'N',
+        # "SSR_CLSRCH_WRK_FRI$6" => days[5] == 1 ? 'Y' : 'N',
+        # "SSR_CLSRCH_WRK_SAT$chk$6" => days[6] == 1 ? 'Y' : 'N',
+        # "SSR_CLSRCH_WRK_SAT$6" => days[6] == 1 ? 'Y' : 'N',
+        # "SSR_CLSRCH_WRK_SSR_EXACT_MATCH2$7" => args[:instructor_matchtype],
+        # "SSR_CLSRCH_WRK_LAST_NAME$7" => args[:instructor],
+        # "SSR_CLSRCH_WRK_CLASS_NBR$8" => args[:class_number],
+        # "SSR_CLSRCH_WRK_CAMPUS$9" => args[:campus],
+        # "SSR_CLSRCH_WRK_SSR_COMPONENT$10" => args[:component],
+        # "SSR_CLSRCH_WRK_SESSION_CODE$11" => args[:session_code],
+        # "SSR_CLSRCH_WRK_CRSE_ATTR$12" => "",
+        # "SSR_CLSRCH_WRK_CRSE_ATTR_VALUE$12" => "",
+        "DERIVED_SSTSNAV_SSTS_MAIN_GOTO$190$" => '9999'
     }
 
     response = @agent.post(args['url'], params, ajax_headers)
@@ -139,7 +139,7 @@ class CourseWorker
     error = doc.search("span[id^='DERIVED_CLSMSG_ERROR_TEXT']/text()")
 
     if error.present?
-      handle_error(error, args)
+      handle_error(error, params)
       return false
     end
 
@@ -149,7 +149,7 @@ class CourseWorker
 
   def parse_courses(doc, term)
 
-    courses = doc.search("span[id^='DERIVED_CLSRCH_DESCR200$']/text()").to_a
+    courses = doc.search("div[id^='win6divSSR_CLSRSLT_WRK_GROUPBOX2GP$']/text()").to_a
 
     location_counter = 0
     section_counter = 0
@@ -160,25 +160,25 @@ class CourseWorker
       department = $1
       number = $3
       title = $4
-      sections = doc.search("div[id='win6div$ICField244GP$" + i.to_s + "'] > span[class='PSGRIDCOUNTER']/text()").to_s.gsub(/1.*of\s/, "").to_i
+      sections = doc.search("div[id='win6div$ICField99$" + i.to_s + "'] > table > tr > td > table > tr").length / 2
 
       puts ""
       puts "#{department} #{number} #{title} has #{sections} sections"
 
       sections.times do |blah1|
 
-        uniqueid_sec = doc.search("a[id='DERIVED_CLSRCH_SSR_CLASSNAME_LONG$" + section_counter.to_s + "']").text
-        uniqueid_sec =~ /(\w+)-(\w+)\((\d+)\)/
+        unique_id = doc.search("a[id='MTG_CLASS_NBR$" + section_counter.to_s + "']").text
+        sec_category = doc.search("a[id='MTG_CLASSNAME$" + section_counter.to_s + "']").text
+        sec_category =~ /(\w+)-(\w+)/
 
         section = $1
         category = $2
-        unique_id = $3
 
         status = doc.search("div[id='win6divDERIVED_CLSRCH_SSR_STATUS_LONG$" + section_counter.to_s + "'] > div > img")[0]['alt']
 
         locations = doc.search("div[id='win6divSSR_CLSRCH_MTG1$" + section_counter.to_s + "'] > table > tr").length - 1
 
-        puts "-- #{uniqueid_sec} #{status} has #{locations} locations"
+        puts "-- #{unique_id} #{section} #{category} #{status} has #{locations} locations"
 
         course = Course.find_or_initialize_by(id: unique_id)
         course.update_attributes(
@@ -218,9 +218,9 @@ class CourseWorker
               instr.save
               instructor_ids << instr
             else
-              puts "ERROR ERROR ERROR ERROR ERROR NOOOOOO"
+              puts 'ERROR ERROR ERROR ERROR ERROR NOOOOOO'
               puts instructor
-              puts "ERROR ERROR ERROR ERROR ERROR NOOOOOO"
+              puts 'ERROR ERROR ERROR ERROR ERROR NOOOOOO'
             end
           end
 

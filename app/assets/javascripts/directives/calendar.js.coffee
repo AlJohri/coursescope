@@ -1,4 +1,4 @@
-angular.module('todoApp').directive 'calendar', ->
+angular.module('app').directive 'calendar', ->
   restrict: 'E'
   transclude: true
   replace: true

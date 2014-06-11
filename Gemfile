@@ -41,6 +41,7 @@ group :development do
   #gem 'debugger'
   gem 'debase'
   gem 'ruby-debug-ide'
+  gem 'byebug'
 end
 
 gem 'figaro'

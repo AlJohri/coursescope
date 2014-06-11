@@ -15,7 +15,7 @@ module.exports = (config) ->
       'app/assets/javascripts/lib/angular.min.js',
       'app/assets/javascripts/lib/angular-resource.min.js',
       'jstest/support/*.js'
-      'app/assets/javascripts/todoApp.js.coffee',
+      'app/assets/javascripts/app.coffee',
       'app/assets/javascripts/**/*.js*',
       'jstest/**/*.coffee'
     ]

@@ -6,5 +6,5 @@
 //= require lib/angular.min
 //= require lib/angular-route.min
 //= require lib/angular-resource.min
-//= require todoApp
+//= require app
 //= require_tree .

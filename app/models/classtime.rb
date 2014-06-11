@@ -13,7 +13,7 @@ class Classtime < ActiveRecord::Base
 
   def convert_days(days_int)
       days = []
-      days_bitvector = days_int.to_s(2).split("")
+      days_bitvector = days_int.to_s(2).split('')
       days_bitvector.each_with_index { |day, i|
         if i == 0 and day == "1"
           days.append('Sunday')
