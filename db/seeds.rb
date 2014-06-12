@@ -28,7 +28,7 @@ hash_careers = {
 }
 
 hash_careers.each { |key, value|
-  Career.create :id => key, :title => value
+    Career.create :id => key, :title => value
 }
 
 hash_departments = {
@@ -239,7 +239,7 @@ hash_departments = {
 }    
 
 hash_departments.each { |key, value|
-  Department.create :id => key, :title => value
+    Department.create :id => key, :title => value
 }
 
 hash_terms = {
@@ -327,13 +327,13 @@ hash_terms = {
     "4540" => ["2014 Spring","2013-14"],
     "4550" => ["2014 Winter", "2013-14"],
 
-    "4570" => ["2014 Fall", "2014-15"],
-    "4575" => ["2014-2015 Academic Year", "2014-15"],
-    "4580" => ["2015 Winter", "2014-15"],
-    "4590" => ["2015 Spring", "2014-15"],
+    "4560" => ["2014 Fall", "2014-15"],
+    "4565" => ["2014-2015 Academic Year", "2014-15"],
+    "4570" => ["2015 Winter", "2014-15"],
+    "4580" => ["2015 Spring", "2014-15"],
     "4600" => ["2015 Winter", "2014-15"]
 }
 
 hash_terms.each { |key, value|
-        Term.create :id => key, :title => value[0], :year => value[1]
+    Term.create :id => key, :title => value[0], :year => value[1]
 }

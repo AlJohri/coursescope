@@ -9,7 +9,7 @@ class CourseWorker
 
   def perform()
     careers = [Career.all[16]]
-    deparments = Department.all # Department.all # [Department.all[49]] 
+    deparments = Department.all # Department.all # [Department.all[49]]
 
     careers.each do |career|
       deparments.each do |department|
@@ -58,7 +58,6 @@ class CourseWorker
 
   def scrape_courses(term, department, career)
     data = get_courses({term: term, department: department, career: career})
-    puts data
     parse_courses(data, term) if data
   end
 
@@ -139,7 +138,7 @@ class CourseWorker
     error = doc.search("span[id^='DERIVED_CLSMSG_ERROR_TEXT']/text()")
 
     if error.present?
-      handle_error(error, params)
+      handle_error(error, args)
       return false
     end
 
@@ -204,7 +203,7 @@ class CourseWorker
           # Ronald Ray Braeutigam ERROR ERROR (not sure why??) ECON 310-1
           # Susan Caplan Oloroso, # CRDV 301-0
           # Seth Magletymire, # ENVR_POL 390-0
-          instructors.split(", \n").each do |instructor|
+          instructors.split(/, \r|\n|\r\n/).each do |instructor|
             if instructor == "Staff"
               instr = Instructor.find_or_initialize_by(:first_name => "Staff", :last_name => "Staff", :category => "Unknown")
               instr.save
@@ -218,9 +217,33 @@ class CourseWorker
               instr.save
               instructor_ids << instr
             else
-              puts 'ERROR ERROR ERROR ERROR ERROR NOOOOOO'
-              puts instructor
-              puts 'ERROR ERROR ERROR ERROR ERROR NOOOOOO'
+
+              # First name is instructor.split[0], last name is instructor.split[1..3]
+              if instructor == "Monica Russel y Rodriguez" or instructor == "Suzan van der Lee"
+                instr = Instructor.find_or_initialize_by(:first_name => instructor.split[0], :last_name => instructor.split[1..3].join(" "), :category => "Professor")
+                instr.save
+                instructor_ids << instr
+              # First name is instructor.split[0], middle name is instructor.split[1..2], and last name is instructor.split[3]
+              elsif instructor == "David Stephen Rodler Abrahamson" or instructor == "Joan Arnau Pàmies Olivé" or instructor == "Jack Dennis Martinez Arias"
+                instr = Instructor.find_or_initialize_by(:first_name => instructor.split[0], :middle_name => instructor.split[1..2].join(" "), :last_name => instructor.split[3], :category => "Professor")
+                instr.save
+                instructor_ids << instr
+              # Need to put the suffix somewhere "Jr"
+              elsif instructor == "William Reginald Gibbons Jr"
+                instr = Instructor.find_or_initialize_by(:first_name => "William", :middle_name => "Reginald", :last_name => "Gibbons", :category => "Professor")
+                instr.save
+                instructor_ids << instr
+              elsif instructor == "Edward Wallace Muir Jr"
+                instr = Instructor.find_or_initialize_by(:first_name => "Edward", :middle_name => "Wallace", :last_name => "Muir", :category => "Professor")
+                instr.save
+                instructor_ids << instr
+              else
+                puts 'ERROR ERROR ERROR ERROR ERROR NOOOOOO'
+                puts instructor
+                byebug
+                puts 'ERROR ERROR ERROR ERROR ERROR NOOOOOO'
+              end
+
             end
           end
 
@@ -257,7 +280,7 @@ class CourseWorker
           end_time = end_time == "TBA" ? nil : TimeOfDay.parse(end_time)
 
           #Does not support classes with exact ID meeting twice in same day...
-          classtime = Classtime.find_or_initialize_by(:course_id => unique_id, :classroom_id => Classroom.find_by_title(room).id, :days =>days_int ) do |c|
+          classtime = Classtime.find_or_initialize_by(:course_id => unique_id, :classroom_id => classroom.id, :days => days_int ) do |c|
             c.start_time = start_time
             c.end_time = end_time
           end
